@@ -26,4 +26,10 @@ export class MccsService {
   async findAll() {
     return this.prisma.mcc.findMany();
   }
+
+  async findOne(mccId: number) {
+    return this.prisma.mcc.findUnique({
+      where: { mccId },
+    });
+  }
 }

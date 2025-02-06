@@ -32,4 +32,13 @@ model mcc {
   code String @unique
   balanceTypeId Int
   balanceType balanceType @relation(fields: [balanceTypeId], references: [balanceTypeId])
+  merchant merchant[]
+}
+
+
+model merchant {
+  merchantId Int @id @default(autoincrement())
+  name String @unique
+  mccId Int
+  mcc mcc @relation(fields: [mccId], references: [mccId])
 }
