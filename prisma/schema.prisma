@@ -13,3 +13,9 @@ model user {
   fullname String
   cpf String @unique
 }
+
+model company {
+  companyId Int @id @default(autoincrement())
+  name String
+  cnpj String @unique
+}

@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 
 async function main() {
   await createDummyUser();
+  await createDummyCompany();
 }
 
 async function createDummyUser() {
@@ -18,7 +19,17 @@ async function createDummyUser() {
   });
 }
 
-// execute the main function
+async function createDummyCompany() {
+  await prisma.company.upsert({
+    where: { cnpj: '00000000000001' },
+    update: {},
+    create: {
+      name: 'Caju',
+      cnpj: '00000000000001',
+    },
+  });
+}
+
 main()
   .catch((e) => {
     console.error(e);
