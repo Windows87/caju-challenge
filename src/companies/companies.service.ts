@@ -16,4 +16,10 @@ export class CompaniesService {
   async findAll() {
     return await this.prisma.company.findMany();
   }
+
+  async findOne(companyId: number) {
+    return await this.prisma.company.findUnique({
+      where: { companyId },
+    });
+  }
 }

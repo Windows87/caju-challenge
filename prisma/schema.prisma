@@ -12,12 +12,14 @@ model user {
   userId Int @id @default(autoincrement())
   fullname String
   cpf String @unique
+  account account[]
 }
 
 model company {
   companyId Int @id @default(autoincrement())
   name String
   cnpj String @unique
+  account account[]
 }
 
 model balanceType {
@@ -41,4 +43,14 @@ model merchant {
   name String @unique
   mccId Int
   mcc mcc @relation(fields: [mccId], references: [mccId])
+}
+
+model account {
+  accountId Int @id @default(autoincrement())
+  userId Int
+  user user @relation(fields: [userId], references: [userId])
+  companyId Int
+  company company @relation(fields: [companyId], references: [companyId])
+
+  @@unique([userId, companyId])
 }

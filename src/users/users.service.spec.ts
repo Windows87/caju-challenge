@@ -51,4 +51,16 @@ describe('UsersService', () => {
 
     expect(await service.findAll()).toBe(usersData);
   });
+
+  it('should return an user', async () => {
+    const userData = {
+      userId: 1,
+      fullname: 'Yuri',
+      cpf: '00000000000',
+    };
+
+    prisma.user.findUnique = jest.fn().mockReturnValueOnce(userData);
+
+    expect(await service.findOne(userData.userId)).toBe(userData);
+  });
 });

@@ -51,4 +51,16 @@ describe('CompaniesService', () => {
 
     expect(await service.findAll()).toBe(companiesData);
   });
+
+  it('should return a company', async () => {
+    const companyData = {
+      companyId: 1,
+      name: 'Caju',
+      cnpj: '00000000000001',
+    };
+
+    prisma.company.findUnique = jest.fn().mockReturnValueOnce(companyData);
+
+    expect(await service.findOne(companyData.companyId)).toBe(companyData);
+  });
 });
