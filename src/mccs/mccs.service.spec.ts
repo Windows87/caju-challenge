@@ -81,4 +81,16 @@ describe('MccsService', () => {
 
     expect(await service.findAll()).toBe(mccsData);
   });
+
+  it('should return mcc by id', async () => {
+    const mccsData = {
+      mccId: 1,
+      code: '5411',
+      balanceTypeId: 1,
+    };
+
+    prisma.mcc.findUnique = jest.fn().mockReturnValueOnce(mccsData);
+
+    expect(await service.findOne(mccsData.mccId)).toBe(mccsData);
+  });
 });

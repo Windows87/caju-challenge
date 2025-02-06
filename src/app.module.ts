@@ -5,9 +5,10 @@ import { UsersModule } from './users/users.module';
 import { CompaniesModule } from './companies/companies.module';
 import { BalanceTypesModule } from './balance-types/balance-types.module';
 import { MccsModule } from './mccs/mccs.module';
+import { MerchantsModule } from './merchants/merchants.module';
 
 @Module({
-  imports: [UsersModule, CompaniesModule, BalanceTypesModule, MccsModule],
+  imports: [UsersModule, CompaniesModule, BalanceTypesModule, MccsModule, MerchantsModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -8,6 +8,7 @@ async function main() {
   await createDummyCompany();
   await createDefaultBalanceTypes();
   await createDefaultMccs();
+  await createDefaultMerchants();
 }
 
 async function createDummyUser() {
@@ -96,6 +97,21 @@ async function createDefaultMccs() {
     },
   });
 }
+
+const createDefaultMerchants = async () => {
+  const foodMcc = await prisma.mcc.findUnique({
+    where: { code: '5411' },
+  });
+
+  await prisma.merchant.upsert({
+    where: { name: 'UBER EATS                   SAO PAULO BR' },
+    update: {},
+    create: {
+      name: 'UBER EATS                   SAO PAULO BR',
+      mccId: foodMcc!.mccId,
+    },
+  });
+};
 
 main()
   .catch((e) => {
