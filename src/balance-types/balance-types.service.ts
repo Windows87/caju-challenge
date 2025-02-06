@@ -18,4 +18,10 @@ export class BalanceTypesService {
   async findAll() {
     return await this.prisma.balanceType.findMany();
   }
+
+  async findOne(balanceTypeId: number): Promise<BalanceType | null> {
+    return await this.prisma.balanceType.findUnique({
+      where: { balanceTypeId },
+    });
+  }
 }

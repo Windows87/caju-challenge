@@ -7,6 +7,7 @@ async function main() {
   await createDummyUser();
   await createDummyCompany();
   await createDefaultBalanceTypes();
+  await createDefaultMccs();
 }
 
 async function createDummyUser() {
@@ -32,12 +33,67 @@ async function createDummyCompany() {
 }
 
 async function createDefaultBalanceTypes() {
-  await prisma.balanceType.createMany({
-    data: [
-      { name: 'Vale Refeição', slug: 'FOOD' },
-      { name: 'Vale Alimentação', slug: 'MEAL' },
-      { name: 'Saldo Livre', slug: 'CASH' },
-    ],
+  await prisma.balanceType.upsert({
+    where: { slug: 'FOOD' },
+    update: {},
+    create: {
+      name: 'Vale Refeição',
+      slug: 'FOOD',
+    },
+  });
+
+  await prisma.balanceType.upsert({
+    where: { slug: 'MEAL' },
+    update: {},
+    create: {
+      name: 'Vale Alimentação',
+      slug: 'MEAL',
+    },
+  });
+
+  await prisma.balanceType.upsert({
+    where: { slug: 'CASH' },
+    update: {},
+    create: {
+      name: 'Saldo Livre',
+      slug: 'CASH',
+    },
+  });
+}
+
+async function createDefaultMccs() {
+  const foodBalanceType = await prisma.balanceType.findUnique({
+    where: { slug: 'FOOD' },
+  });
+  const mealBalanceType = await prisma.balanceType.findUnique({
+    where: { slug: 'MEAL' },
+  });
+
+  await prisma.mcc.upsert({
+    where: { code: '5411' },
+    update: {},
+    create: {
+      code: '5411',
+      balanceTypeId: foodBalanceType!.balanceTypeId,
+    },
+  });
+
+  await prisma.mcc.upsert({
+    where: { code: '5412' },
+    update: {},
+    create: {
+      code: '5412',
+      balanceTypeId: foodBalanceType!.balanceTypeId,
+    },
+  });
+
+  await prisma.mcc.upsert({
+    where: { code: '5812' },
+    update: {},
+    create: {
+      code: '5812',
+      balanceTypeId: mealBalanceType!.balanceTypeId,
+    },
   });
 }
 
