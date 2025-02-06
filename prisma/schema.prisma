@@ -19,3 +19,18 @@ model company {
   name String
   cnpj String @unique
 }
+
+model balanceType {
+  balanceTypeId Int @id @default(autoincrement())
+  name String
+  slug String @unique
+  mcc mcc[]
+}
+
+model mcc {
+  mccId Int @id @default(autoincrement())
+  code String @unique
+  description String
+  balanceTypeId Int
+  balanceType balanceType @relation(fields: [balanceTypeId], references: [balanceTypeId])
+}

@@ -6,6 +6,7 @@ const prisma = new PrismaClient();
 async function main() {
   await createDummyUser();
   await createDummyCompany();
+  await createDefaultBalanceTypes();
 }
 
 async function createDummyUser() {
@@ -27,6 +28,16 @@ async function createDummyCompany() {
       name: 'Caju',
       cnpj: '00000000000001',
     },
+  });
+}
+
+async function createDefaultBalanceTypes() {
+  await prisma.balanceType.createMany({
+    data: [
+      { name: 'Vale Refeição', slug: 'FOOD' },
+      { name: 'Vale Alimentação', slug: 'MEAL' },
+      { name: 'Saldo Livre', slug: 'CASH' },
+    ],
   });
 }
 
