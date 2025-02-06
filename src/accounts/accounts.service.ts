@@ -23,8 +23,30 @@ export class AccountsService {
 
     if (!company) throw new Error('Company not found');
 
-    return await this.prisma.account.create({
-      data: createAccountDto,
+    return await this.prisma.$transaction(async (prisma) => {
+      const account = await prisma.account.create({
+        data: createAccountDto,
+      });
+
+      const balanceTypes = await this.prisma.balanceType.findMany();
+
+      await Promise.all(
+        balanceTypes.map(async (balanceType) => {
+          await prisma.accountBalance.create({
+            data: {
+              balance: 0,
+              account: {
+                connect: { accountId: account.accountId },
+              },
+              balanceType: {
+                connect: { balanceTypeId: balanceType.balanceTypeId },
+              },
+            },
+          });
+        }),
+      );
+
+      return account;
     });
   }
 
