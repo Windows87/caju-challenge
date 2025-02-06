@@ -10,6 +10,7 @@ async function main() {
   await createDefaultMccs();
   await createDefaultMerchants();
   await createDummyAccount();
+  await createDummyAccountBalances();
 }
 
 async function createDummyUser() {
@@ -131,6 +132,40 @@ const createDummyAccount = async () => {
       companyId: company!.companyId,
     },
   });
+};
+
+const createDummyAccountBalances = async () => {
+  const company = await prisma.company.findUnique({
+    where: { cnpj: '00000000000001' },
+  });
+  const user = await prisma.user.findUnique({
+    where: { cpf: '00000000000' },
+  });
+
+  const account = await prisma.account.findUnique({
+    where: {
+      userId_companyId: { userId: user!.userId, companyId: company!.companyId },
+    },
+  });
+
+  const balanceTypes = await prisma.balanceType.findMany();
+
+  for (const balanceType of balanceTypes) {
+    await prisma.accountBalance.upsert({
+      where: {
+        accountId_balanceTypeId: {
+          accountId: account!.accountId,
+          balanceTypeId: balanceType.balanceTypeId,
+        },
+      },
+      update: {},
+      create: {
+        accountId: account!.accountId,
+        balanceTypeId: balanceType.balanceTypeId,
+        balance: 300,
+      },
+    });
+  }
 };
 
 main()

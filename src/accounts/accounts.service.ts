@@ -33,6 +33,11 @@ export class AccountsService {
       include: {
         company: true,
         user: true,
+        accountBalance: {
+          include: {
+            balanceType: true,
+          },
+        },
       },
     });
   }

@@ -27,6 +27,8 @@ model balanceType {
   name String
   slug String @unique
   mcc mcc[]
+
+  accountBalance accountBalance[]
 }
 
 model mcc {
@@ -53,4 +55,16 @@ model account {
   company company @relation(fields: [companyId], references: [companyId])
 
   @@unique([userId, companyId])
+  accountBalance accountBalance[]
+}
+
+model accountBalance {
+  accountBalanceId Int @id @default(autoincrement())
+  accountId Int
+  account account @relation(fields: [accountId], references: [accountId])
+  balanceTypeId Int
+  balanceType balanceType @relation(fields: [balanceTypeId], references: [balanceTypeId])
+  balance Float
+
+  @@unique([accountId, balanceTypeId])
 }

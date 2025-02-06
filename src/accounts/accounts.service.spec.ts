@@ -131,6 +131,41 @@ describe('AccountsService', () => {
           fullname: 'Yuri',
           cpf: '00000000000',
         },
+        accountBalance: [
+          {
+            accountBalanceId: 1,
+            accountId: 1,
+            balanceTypeId: 1,
+            balance: 300,
+            balanceType: {
+              balanceTypeId: 1,
+              name: 'Vale Refeição',
+              slug: 'FOOD',
+            },
+          },
+          {
+            accountBalanceId: 2,
+            accountId: 1,
+            balanceTypeId: 2,
+            balance: 300,
+            balanceType: {
+              balanceTypeId: 2,
+              name: 'Vale Alimentação',
+              slug: 'MEAL',
+            },
+          },
+          {
+            accountBalanceId: 3,
+            accountId: 1,
+            balanceTypeId: 3,
+            balance: 300,
+            balanceType: {
+              balanceTypeId: 3,
+              name: 'Saldo Livre',
+              slug: 'CASH',
+            },
+          },
+        ],
       },
     ];
 
