@@ -9,6 +9,7 @@ async function main() {
   await createDefaultBalanceTypes();
   await createDefaultMccs();
   await createDefaultMerchants();
+  await createDummyAccount();
 }
 
 async function createDummyUser() {
@@ -109,6 +110,25 @@ const createDefaultMerchants = async () => {
     create: {
       name: 'UBER EATS                   SAO PAULO BR',
       mccId: foodMcc!.mccId,
+    },
+  });
+};
+
+const createDummyAccount = async () => {
+  const company = await prisma.company.findUnique({
+    where: { cnpj: '00000000000001' },
+  });
+  const user = await prisma.user.findUnique({
+    where: { cpf: '00000000000' },
+  });
+  await prisma.account.upsert({
+    where: {
+      userId_companyId: { userId: user!.userId, companyId: company!.companyId },
+    },
+    update: {},
+    create: {
+      userId: user!.userId,
+      companyId: company!.companyId,
     },
   });
 };
