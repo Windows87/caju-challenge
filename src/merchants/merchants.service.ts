@@ -23,4 +23,11 @@ export class MerchantsService {
   async findAll() {
     return await this.prisma.merchant.findMany();
   }
+
+  async findByName(name: string) {
+    return await this.prisma.merchant.findFirst({
+      where: { name },
+      include: { mcc: true },
+    });
+  }
 }

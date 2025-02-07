@@ -8,6 +8,7 @@ import { CompaniesModule } from './companies/companies.module';
 import { MccsModule } from './mccs/mccs.module';
 import { MerchantsModule } from './merchants/merchants.module';
 import { UsersModule } from './users/users.module';
+import { TransactionsModule } from './transactions/transactions.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UsersModule } from './users/users.module';
     MerchantsModule,
     AccountsModule,
     AccountBalancesModule,
+    TransactionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

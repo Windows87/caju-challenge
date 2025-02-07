@@ -37,6 +37,8 @@ model mcc {
   balanceTypeId Int
   balanceType balanceType @relation(fields: [balanceTypeId], references: [balanceTypeId])
   merchant merchant[]
+
+  transaction transaction[]
 }
 
 
@@ -56,6 +58,7 @@ model account {
   accountBalance accountBalance[]
 
   @@unique([userId, companyId])
+  transaction transaction[]
 }
 
 model accountBalance {
@@ -67,4 +70,15 @@ model accountBalance {
   balance Float
 
   @@unique([accountId, balanceTypeId])
+}
+
+model transaction {
+  transactionId Int @id @default(autoincrement())
+  accountId Int
+  account account @relation(fields: [accountId], references: [accountId])
+  mccId Int
+  mcc mcc @relation(fields: [mccId], references: [mccId])
+  amount Float
+  merchantName String
+  createdAt DateTime @default(now())
 }

@@ -170,4 +170,22 @@ describe('AccountBalancesService', () => {
       service.chargeAccountBalance(chargeAccountBalanceDto),
     ).rejects.toThrow('Account not found');
   });
+
+  it('should find by account and balance type', async () => {
+    const accountBalanceData = {
+      balanceTypeId: 1,
+      accountId: 1,
+    };
+
+    prisma.accountBalance.findUnique = jest
+      .fn()
+      .mockReturnValueOnce(accountBalanceData);
+
+    expect(
+      await service.findByAccountAndBalanceType(
+        accountBalanceData.accountId,
+        accountBalanceData.balanceTypeId,
+      ),
+    ).toBe(accountBalanceData);
+  });
 });

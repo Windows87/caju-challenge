@@ -43,4 +43,10 @@ export class BalanceTypesService {
       where: { balanceTypeId },
     });
   }
+
+  async findBySlug(slug: string): Promise<BalanceType | null> {
+    return await this.prisma.balanceType.findUnique({
+      where: { slug },
+    });
+  }
 }
