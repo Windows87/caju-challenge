@@ -8,6 +8,38 @@ Este é o desafio técnico para a Caju para a posição de Software Engineer Ple
 ## Como Rodar o Projeto?
 ![Swagger](https://i.imgur.com/Lz7QkoQ.png)
 
+Inicialmente, é necessário que você tenha o Docker e o Node.js instalados em sua máquina.
+
+**IMPORTANTE:** Após clonar o repositório e acessar a pasta do projeto, você deve criar um arquivo de variáveis de ambiente (.env). Para isso, basta renomear o arquivo de exemplo (.env.example) para .env.
+
+Em seguida, execute os seguintes comandos para instalar as dependências e iniciar o projeto:
+
+```sh
+npm install
+npx prisma generate
+docker compose up -d
+```
+
+Depois, execute as migrations do banco de dados com o seguinte comando:
+
+```sh
+docker compose run backend npx prisma migrate dev
+```
+
+Se desejar ter alguns dados padrão cadastrados no banco de dados (como os MCCs 5411, 5412, etc.) para realizar testes manuais, execute o comando de seed. Ele adicionará automaticamente alguns registros ao banco:
+
+```sh
+docker compose run backend npx prisma db seed
+```
+
+Agora, você já pode acessar a documentação da API por meio do Swagger em http://localhost:3000/api. Nela, estão detalhados todos os inputs e outputs esperados para cada endpoint desenvolvido.
+
+Para rodar os testes automatizados, basta executar o seguinte comando após iniciar o projeto:
+
+```sh
+docker compose run backend npm run test
+```
+
 ## Decisões Técnicas
 
 - **TypeScript:** O TypeScript foi utilizado por ser a linguagem na qual tenho maior domínio técnico, o que me permitiria desenvolver o projeto com mais agilidade dentro do prazo estipulado. Além disso, o TypeScript foi escolhido em vez do JavaScript por oferecer diversas vantagens, principalmente a tipagem, que possibilita uma melhor manutenção do código.
