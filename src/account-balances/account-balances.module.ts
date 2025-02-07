@@ -1,23 +1,24 @@
 import { Module } from '@nestjs/common';
-import { AccountBalancesService } from 'src/account-balances/account-balances.service';
 import { AccountsService } from 'src/accounts/accounts.service';
 import { BalanceTypesService } from 'src/balance-types/balance-types.service';
 import { CompaniesService } from 'src/companies/companies.service';
+import { MccsService } from 'src/mccs/mccs.service';
 import { PrismaService } from 'src/prisma.service';
 import { UsersService } from 'src/users/users.service';
-import { MccsController } from './mccs.controller';
-import { MccsService } from './mccs.service';
+import { AccountBalancesController } from './account-balances.controller';
+import { AccountBalancesService } from './account-balances.service';
 
 @Module({
-  controllers: [MccsController],
+  controllers: [AccountBalancesController],
   providers: [
-    MccsService,
-    BalanceTypesService,
+    AccountBalancesService,
     PrismaService,
     AccountsService,
     UsersService,
     CompaniesService,
-    AccountBalancesService,
+    BalanceTypesService,
+    CompaniesService,
+    MccsService,
   ],
 })
-export class MccsModule {}
+export class AccountBalancesModule {}

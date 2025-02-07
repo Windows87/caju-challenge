@@ -1,4 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { AccountBalancesService } from 'src/account-balances/account-balances.service';
+import { BalanceTypesService } from 'src/balance-types/balance-types.service';
 import { CompaniesService } from 'src/companies/companies.service';
 import { PrismaService } from 'src/prisma.service';
 import { UsersService } from 'src/users/users.service';
@@ -11,15 +13,18 @@ describe('AccountsController', () => {
   let prisma: PrismaService;
   let companiesService: CompaniesService;
   let usersService: UsersService;
+  let balanceTypesService: BalanceTypesService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AccountsController],
       providers: [
         AccountsService,
-        PrismaService,
-        CompaniesService,
         UsersService,
+        CompaniesService,
+        PrismaService,
+        BalanceTypesService,
+        AccountBalancesService,
       ],
     }).compile();
 
@@ -27,6 +32,7 @@ describe('AccountsController', () => {
     prisma = module.get<PrismaService>(PrismaService);
     companiesService = module.get<CompaniesService>(CompaniesService);
     usersService = module.get<UsersService>(UsersService);
+    balanceTypesService = module.get<BalanceTypesService>(BalanceTypesService);
   });
 
   it('should be defined', () => {
@@ -59,6 +65,7 @@ describe('AccountsController', () => {
 
     usersService.findOne = jest.fn().mockReturnValueOnce(userData);
     companiesService.findOne = jest.fn().mockReturnValueOnce(companyData);
+    balanceTypesService.findAll = jest.fn().mockReturnValueOnce([]);
 
     prisma.account.create = jest.fn().mockReturnValueOnce(accountData);
 
@@ -137,6 +144,41 @@ describe('AccountsController', () => {
           fullname: 'Yuri',
           cpf: '00000000000',
         },
+        accountBalance: [
+          {
+            accountBalanceId: 1,
+            accountId: 1,
+            balanceTypeId: 1,
+            balance: 300,
+            balanceType: {
+              balanceTypeId: 1,
+              name: 'Vale Refeição',
+              slug: 'FOOD',
+            },
+          },
+          {
+            accountBalanceId: 2,
+            accountId: 1,
+            balanceTypeId: 2,
+            balance: 300,
+            balanceType: {
+              balanceTypeId: 2,
+              name: 'Vale Alimentação',
+              slug: 'MEAL',
+            },
+          },
+          {
+            accountBalanceId: 3,
+            accountId: 1,
+            balanceTypeId: 3,
+            balance: 300,
+            balanceType: {
+              balanceTypeId: 3,
+              name: 'Saldo Livre',
+              slug: 'CASH',
+            },
+          },
+        ],
       },
     ];
 

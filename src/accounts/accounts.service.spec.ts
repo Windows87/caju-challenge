@@ -1,4 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { AccountBalancesService } from 'src/account-balances/account-balances.service';
+import { BalanceTypesService } from 'src/balance-types/balance-types.service';
 import { CompaniesService } from 'src/companies/companies.service';
 import { PrismaService } from 'src/prisma.service';
 import { UsersService } from 'src/users/users.service';
@@ -10,14 +12,17 @@ describe('AccountsService', () => {
   let prisma: PrismaService;
   let companiesService: CompaniesService;
   let usersService: UsersService;
+  let balanceTypesService: BalanceTypesService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AccountsService,
-        PrismaService,
-        CompaniesService,
         UsersService,
+        CompaniesService,
+        PrismaService,
+        BalanceTypesService,
+        AccountBalancesService,
       ],
     }).compile();
 
@@ -25,6 +30,7 @@ describe('AccountsService', () => {
     prisma = module.get<PrismaService>(PrismaService);
     companiesService = module.get<CompaniesService>(CompaniesService);
     usersService = module.get<UsersService>(UsersService);
+    balanceTypesService = module.get<BalanceTypesService>(BalanceTypesService);
   });
 
   it('should create an account', async () => {
@@ -53,6 +59,7 @@ describe('AccountsService', () => {
 
     usersService.findOne = jest.fn().mockReturnValueOnce(userData);
     companiesService.findOne = jest.fn().mockReturnValueOnce(companyData);
+    balanceTypesService.findAll = jest.fn().mockReturnValueOnce([]);
 
     prisma.account.create = jest.fn().mockReturnValueOnce(accountData);
 
@@ -79,6 +86,7 @@ describe('AccountsService', () => {
 
     usersService.findOne = jest.fn().mockReturnValueOnce(null);
     companiesService.findOne = jest.fn().mockReturnValueOnce(companyData);
+    balanceTypesService.findAll = jest.fn().mockReturnValueOnce([]);
 
     prisma.account.create = jest.fn().mockReturnValueOnce(accountData);
 
@@ -107,6 +115,7 @@ describe('AccountsService', () => {
 
     usersService.findOne = jest.fn().mockReturnValueOnce(userData);
     companiesService.findOne = jest.fn().mockReturnValueOnce(null);
+    balanceTypesService.findAll = jest.fn().mockReturnValueOnce([]);
 
     prisma.account.create = jest.fn().mockReturnValueOnce(accountData);
 
@@ -131,11 +140,103 @@ describe('AccountsService', () => {
           fullname: 'Yuri',
           cpf: '00000000000',
         },
+        accountBalance: [
+          {
+            accountBalanceId: 1,
+            accountId: 1,
+            balanceTypeId: 1,
+            balance: 300,
+            balanceType: {
+              balanceTypeId: 1,
+              name: 'Vale Refeição',
+              slug: 'FOOD',
+            },
+          },
+          {
+            accountBalanceId: 2,
+            accountId: 1,
+            balanceTypeId: 2,
+            balance: 300,
+            balanceType: {
+              balanceTypeId: 2,
+              name: 'Vale Alimentação',
+              slug: 'MEAL',
+            },
+          },
+          {
+            accountBalanceId: 3,
+            accountId: 1,
+            balanceTypeId: 3,
+            balance: 300,
+            balanceType: {
+              balanceTypeId: 3,
+              name: 'Saldo Livre',
+              slug: 'CASH',
+            },
+          },
+        ],
       },
     ];
 
     prisma.account.findMany = jest.fn().mockReturnValueOnce(accountsData);
 
     expect(await service.findAll()).toBe(accountsData);
+  });
+
+  it('should return an account', async () => {
+    const accountData = {
+      accountId: 1,
+      userId: 2,
+      companyId: 2,
+      company: {
+        companyId: 2,
+        name: 'Caju',
+        cnpj: '00000000000001',
+      },
+      user: {
+        userId: 2,
+        fullname: 'Yuri',
+        cpf: '00000000000',
+      },
+      accountBalance: [
+        {
+          accountBalanceId: 1,
+          accountId: 1,
+          balanceTypeId: 1,
+          balance: 300,
+          balanceType: {
+            balanceTypeId: 1,
+            name: 'Vale Refeição',
+            slug: 'FOOD',
+          },
+        },
+        {
+          accountBalanceId: 2,
+          accountId: 1,
+          balanceTypeId: 2,
+          balance: 300,
+          balanceType: {
+            balanceTypeId: 2,
+            name: 'Vale Alimentação',
+            slug: 'MEAL',
+          },
+        },
+        {
+          accountBalanceId: 3,
+          accountId: 1,
+          balanceTypeId: 3,
+          balance: 300,
+          balanceType: {
+            balanceTypeId: 3,
+            name: 'Saldo Livre',
+            slug: 'CASH',
+          },
+        },
+      ],
+    };
+
+    prisma.account.findUnique = jest.fn().mockReturnValueOnce(accountData);
+
+    expect(await service.findOne(1)).toBe(accountData);
   });
 });
