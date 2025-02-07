@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { AccountBalancesService } from 'src/account-balances/account-balances.service';
 import { AccountsService } from 'src/accounts/accounts.service';
 import { BalanceTypesService } from 'src/balance-types/balance-types.service';
 import { CompaniesService } from 'src/companies/companies.service';
@@ -16,6 +17,7 @@ import { MccsService } from './mccs.service';
     AccountsService,
     UsersService,
     CompaniesService,
+    AccountBalancesService,
   ],
 })
 export class MccsModule {}

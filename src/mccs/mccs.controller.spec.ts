@@ -1,6 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { AccountBalancesService } from 'src/account-balances/account-balances.service';
+import { AccountsService } from 'src/accounts/accounts.service';
 import { BalanceTypesService } from 'src/balance-types/balance-types.service';
+import { CompaniesService } from 'src/companies/companies.service';
 import { PrismaService } from 'src/prisma.service';
+import { UsersService } from 'src/users/users.service';
 import { MccsController } from './mccs.controller';
 import { MccsService } from './mccs.service';
 
@@ -12,7 +16,15 @@ describe('MccsController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [MccsController],
-      providers: [MccsService, BalanceTypesService, PrismaService],
+      providers: [
+        MccsService,
+        BalanceTypesService,
+        PrismaService,
+        AccountsService,
+        UsersService,
+        CompaniesService,
+        AccountBalancesService,
+      ],
     }).compile();
 
     controller = module.get<MccsController>(MccsController);

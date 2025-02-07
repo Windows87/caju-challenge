@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { balanceType as BalanceType } from '@prisma/client';
+import { AccountBalancesService } from 'src/account-balances/account-balances.service';
 import { AccountsService } from 'src/accounts/accounts.service';
 import { PrismaService } from 'src/prisma.service';
 import { CreateBalanceTypeDto } from './dto/create-balance-type.dto';
@@ -8,37 +9,29 @@ import { CreateBalanceTypeDto } from './dto/create-balance-type.dto';
 export class BalanceTypesService {
   constructor(
     private prisma: PrismaService,
+    @Inject(forwardRef(() => AccountsService))
     private accountsService: AccountsService,
+    @Inject(forwardRef(() => AccountBalancesService))
+    private accountBalancesService: AccountBalancesService,
   ) {}
 
   async create(
     createBalanceTypeDto: CreateBalanceTypeDto,
   ): Promise<BalanceType> {
-    return await this.prisma.$transaction(async (prisma) => {
-      const balanceType = await prisma.balanceType.create({
-        data: createBalanceTypeDto,
-      });
-
-      const accounts = await this.accountsService.findAll();
-
-      await Promise.all(
-        accounts.map(async (account) => {
-          await prisma.accountBalance.create({
-            data: {
-              balance: 0,
-              account: {
-                connect: { accountId: account.accountId },
-              },
-              balanceType: {
-                connect: { balanceTypeId: balanceType.balanceTypeId },
-              },
-            },
-          });
-        }),
-      );
-
-      return balanceType;
+    const balanceType = await this.prisma.balanceType.create({
+      data: createBalanceTypeDto,
     });
+
+    const accounts = await this.accountsService.findAll();
+
+    for (const account of accounts) {
+      await this.accountBalancesService.create({
+        accountId: account.accountId,
+        balanceTypeId: balanceType.balanceTypeId,
+      });
+    }
+
+    return balanceType;
   }
 
   async findAll() {

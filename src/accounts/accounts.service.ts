@@ -1,4 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { AccountBalancesService } from 'src/account-balances/account-balances.service';
+import { BalanceTypesService } from 'src/balance-types/balance-types.service';
 import { CompaniesService } from 'src/companies/companies.service';
 import { PrismaService } from 'src/prisma.service';
 import { UsersService } from 'src/users/users.service';
@@ -10,6 +12,10 @@ export class AccountsService {
     private prisma: PrismaService,
     private usersService: UsersService,
     private companiesService: CompaniesService,
+    @Inject(forwardRef(() => BalanceTypesService))
+    private balanceTypesService: BalanceTypesService,
+    @Inject(forwardRef(() => AccountBalancesService))
+    private accountBalancesService: AccountBalancesService,
   ) {}
 
   async create(createAccountDto: CreateAccountDto) {
@@ -23,35 +29,39 @@ export class AccountsService {
 
     if (!company) throw new Error('Company not found');
 
-    return await this.prisma.$transaction(async (prisma) => {
-      const account = await prisma.account.create({
-        data: createAccountDto,
-      });
-
-      const balanceTypes = await this.prisma.balanceType.findMany();
-
-      await Promise.all(
-        balanceTypes.map(async (balanceType) => {
-          await prisma.accountBalance.create({
-            data: {
-              balance: 0,
-              account: {
-                connect: { accountId: account.accountId },
-              },
-              balanceType: {
-                connect: { balanceTypeId: balanceType.balanceTypeId },
-              },
-            },
-          });
-        }),
-      );
-
-      return account;
+    const account = await this.prisma.account.create({
+      data: createAccountDto,
     });
+
+    const balanceTypes = await this.balanceTypesService.findAll();
+
+    for (const balanceType of balanceTypes) {
+      await this.accountBalancesService.create({
+        accountId: account.accountId,
+        balanceTypeId: balanceType.balanceTypeId,
+      });
+    }
+
+    return account;
   }
 
   async findAll() {
     return await this.prisma.account.findMany({
+      include: {
+        company: true,
+        user: true,
+        accountBalance: {
+          include: {
+            balanceType: true,
+          },
+        },
+      },
+    });
+  }
+
+  async findOne(accountId: number) {
+    return await this.prisma.account.findUnique({
+      where: { accountId },
       include: {
         company: true,
         user: true,

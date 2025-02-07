@@ -1,6 +1,6 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
 import { AccountBalancesService } from './account-balances.service';
-import { CreateAccountBalanceDto } from './dto/create-account-balance.dto';
+import { ChargeAccountBalanceDto } from './dto/charge-account-balance.dto';
 
 @Controller('account-balances')
 export class AccountBalancesController {
@@ -9,7 +9,15 @@ export class AccountBalancesController {
   ) {}
 
   @Post()
-  create(@Body() createAccountBalanceDto: CreateAccountBalanceDto) {
-    return this.accountBalancesService.create(createAccountBalanceDto);
+  async chargeAccountBalance(
+    @Body() chargeAccountBalanceDto: ChargeAccountBalanceDto,
+  ) {
+    try {
+      return await this.accountBalancesService.chargeAccountBalance(
+        chargeAccountBalanceDto,
+      );
+    } catch (error) {
+      throw new BadRequestException((error as Error).message);
+    }
   }
 }

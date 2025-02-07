@@ -53,9 +53,9 @@ model account {
   user user @relation(fields: [userId], references: [userId])
   companyId Int
   company company @relation(fields: [companyId], references: [companyId])
+  accountBalance accountBalance[]
 
   @@unique([userId, companyId])
-  accountBalance accountBalance[]
 }
 
 model accountBalance {
