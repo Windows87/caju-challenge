@@ -32,4 +32,10 @@ export class MccsService {
       where: { mccId },
     });
   }
+
+  async findByCode(code: string) {
+    return this.prisma.mcc.findUnique({
+      where: { code },
+    });
+  }
 }

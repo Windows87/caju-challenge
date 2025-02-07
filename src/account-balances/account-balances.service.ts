@@ -62,7 +62,34 @@ export class AccountBalancesService {
     });
   }
 
+  async decreaseBalance(chargeAccountBalanceDto: ChargeAccountBalanceDto) {
+    return await this.prisma.accountBalance.update({
+      where: {
+        accountId_balanceTypeId: {
+          accountId: chargeAccountBalanceDto.accountId,
+          balanceTypeId: chargeAccountBalanceDto.balanceTypeId,
+        },
+      },
+      data: {
+        balance: {
+          decrement: chargeAccountBalanceDto.amount,
+        },
+      },
+    });
+  }
+
   async findAll() {
     return await this.prisma.accountBalance.findMany();
+  }
+
+  async findByAccountAndBalanceType(accountId: number, balanceTypeId: number) {
+    return await this.prisma.accountBalance.findUnique({
+      where: {
+        accountId_balanceTypeId: {
+          accountId,
+          balanceTypeId,
+        },
+      },
+    });
   }
 }

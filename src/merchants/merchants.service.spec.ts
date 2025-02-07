@@ -95,4 +95,16 @@ describe('MerchantsService', () => {
 
     expect(await service.findAll()).toBe(merchantsData);
   });
+
+  it('should return by name', async () => {
+    const merchantsData = {
+      merchantId: 1,
+      name: 'UBER EATS                   SAO PAULO BR',
+      mccId: 1,
+    };
+
+    prisma.merchant.findFirst = jest.fn().mockReturnValueOnce(merchantsData);
+
+    expect(await service.findByName(merchantsData.name)).toBe(merchantsData);
+  });
 });

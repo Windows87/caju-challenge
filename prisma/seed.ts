@@ -91,6 +91,15 @@ async function createDefaultMccs() {
   });
 
   await prisma.mcc.upsert({
+    where: { code: '5811' },
+    update: {},
+    create: {
+      code: '5811',
+      balanceTypeId: mealBalanceType!.balanceTypeId,
+    },
+  });
+
+  await prisma.mcc.upsert({
     where: { code: '5812' },
     update: {},
     create: {
